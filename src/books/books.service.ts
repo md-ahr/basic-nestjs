@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { Book } from './dto/books.dto';
+import { BookDto } from './dto/books.dto';
 import { Response } from './dto/response.dto';
 
 @Injectable()
 export class BooksService {
-  public books: Book[] = [];
+  public books: BookDto[] = [];
   public book: any;
 
   findBooks(): Response {
@@ -25,7 +25,7 @@ export class BooksService {
     };
   }
 
-  createBook(bookDto: Book): Response {
+  createBook(bookDto: BookDto): Response {
     bookDto.id = uuidv4();
     this.books.push(bookDto);
     return {
@@ -35,7 +35,7 @@ export class BooksService {
     };
   }
 
-  updateBook(id: number, bookDto: Book): Response {
+  updateBook(id: number, bookDto: BookDto): Response {
     const index = this.books.findIndex((book) => +book.id === id);
     this.books[index].id = id.toString();
     this.books[index] = bookDto;

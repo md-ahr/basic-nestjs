@@ -7,17 +7,21 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
-import { Book } from './dto/books.dto';
+import { BookDto } from './dto/books.dto';
 import { Response } from './dto/response.dto';
-import { BooksPipe } from './books.pipe';
+import { AuthGuard } from '@nestjs/passport';
+// import { BooksPipe } from './books.pipe';
 
 @Controller('books')
 export class BooksController {
   constructor(private bookService: BooksService) {}
 
   @Get('/')
+  @UseGuards(AuthGuard('local'))
   findBooks(): Response {
     return this.bookService.findBooks();
   }
@@ -28,14 +32,14 @@ export class BooksController {
   }
 
   @Post('/')
-  createBook(@Body(new BooksPipe()) bookDto: Book): Response {
+  createBook(@Body(new ValidationPipe()) bookDto: BookDto): Response {
     return this.bookService.createBook(bookDto);
   }
 
   @Patch('/:id')
   updateBook(
     @Param('id', ParseIntPipe) id: number,
-    @Body() bookDto: Book,
+    @Body(new ValidationPipe()) bookDto: BookDto,
   ): Response {
     return this.bookService.updateBook(id, bookDto);
   }
